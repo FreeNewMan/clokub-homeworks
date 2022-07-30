@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: multitool
+  name: multitool
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: multitool
+  template:
+    metadata:
+      labels:
+        app: multitool
+    spec:
+      containers:
+      - name: network-multitool
+        image: praqma/network-multitool:alpine-extra
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - name: crts-tst    
+          mountPath: "/crts"
+          readOnly: true
+        env:
+          - name: SECRET_CRT
+            valueFrom:
+              secretKeyRef:
+                name: domain-cert
+                key: tls.crt          
+          - name: SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: domain-cert
+                key: tls.key          
+      volumes:
+      - name: crts-tst
+        secret:     
+          secretName: domain-cert
