@@ -268,8 +268,8 @@ bin                   docker-entrypoint.sh  media                 root          
 certs                 etc                   mnt                   run                   tmp
 crts                  home                  opt                   sbin                  usr
 dev                   lib                   proc                  srv                   var
-bash-5.1# ls /certs
-server.crt  server.key
+bash-5.1# ls /crts
+tls.crt  tls.key
 bash-5.1# 
 ```
 
