@@ -428,6 +428,9 @@ Handling connection for 8080
 
 ![Vault](images/helloVault.png)
 
+
+Если изменить значение секрета, то данные обновятся через минуту
+
 ---
 Разворот Go приложения 
 
@@ -437,7 +440,7 @@ Handling connection for 8080
 > vault kv put secrets/k11s/demo/app/service db_name="users" username="admin" password="passw0rd"
 Key                Value
 ---                -----
-created_time       2022-08-19T13:20:42.070616993Z
+created_time       2022-08-20T18:34:51.652427797Z
 custom_metadata    <nil>
 deletion_time      n/a
 destroyed          false
@@ -454,7 +457,6 @@ version            1
 > }
 > EOF
 Success! Uploaded policy: app_policy_name
-o
 ```
 
 Создаем роль
@@ -499,13 +501,70 @@ token_type                 default
 > vault read -tls-skip-verify auth/approle/role/my-app-role/role-id
 Key        Value
 ---        -----
-role_id    8e9df980-f3af-8f2e-7131-b49921de7a15
+role_id    541de81c-6583-b550-b482-183d497b9254
 ```
 
 Прописываем это значение в 00-cm.yaml
 
+Применяем манифесты.
 
-Если изменить значение секрета, то данные обновятся через минуту
+
+Смотрим поды
+
+```
+Every 2.0s: kubectl get po,svc -o wide                                                                     opsserver: Sat Aug 20 23:44:44 2022
+
+NAME                                     READY   STATUS             RESTARTS       AGE    IP              NODE    NOMINATED NODE   READINESS G
+ATES
+pod/netology-14.3                        1/1     Running            1 (20m ago)    81m    10.233.96.249   node2   <none>           <none>
+pod/nginx-autoreload-7fc59bc88f-mj9k2    2/2     Running            0              14m    10.233.90.174   node1   <none>           <none>
+pod/vault-0                              1/1     Running            0              79m    10.233.96.250   node2   <none>           <none>
+pod/vault-approle-demo-fcf5cc6cc-zb7cb   1/2     CrashLoopBackOff   5 (107s ago)   5m1s   10.233.90.175   node1   <none>           <none>
+
+NAME            TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)    AGE   SELECTOR
+service/vault   ClusterIP   None         <none>        8200/TCP   79m   app=vault
+```
+
+
+В результате go приложение должно аторизоваться в vault и забрать секрет и показать в логах
+
+```
+Every 2.0s: kubectl logs pod/vault-approle-demo-fcf5cc6cc-zb7cb --all-containers                           opsserver: Sat Aug 20 23:42:15 2022
+
+2022-08-20T18:39:44.681Z [INFO]  sink.file: creating file sink
+2022-08-20T18:39:44.681Z [INFO]  sink.file: file sink configured: path=/etc/vault/config/approle/wrapped_token mode=-rwxrwxrwx
+2022-08-20T18:39:44.681Z [INFO]  sink.file: creating file sink
+2022-08-20T18:39:44.681Z [INFO]  sink.file: file sink configured: path=/etc/vault/config/approle/unwrapped_token mode=-rwxrwxrwx
+==> Vault agent started! Log data will stream in below:
+
+==> Vault agent configuration:
+
+                     Cgo: disabled
+               Log Level: info
+                 Version: Vault v1.9.0
+
+2022-08-20T18:39:44.682Z [INFO]  template.server: starting template server
+2022-08-20T18:39:44.682Z [INFO]  template.server: no templates found
+2022-08-20T18:39:44.682Z [INFO]  auth.handler: starting auth handler
+2022-08-20T18:39:44.682Z [INFO]  auth.handler: authenticating
+2022-08-20T18:39:44.682Z [INFO]  sink.server: starting sink server
+2022-08-20T18:39:44.686Z [INFO]  auth.handler: authentication successful, sending token to sinks
+2022-08-20T18:39:44.686Z [INFO]  auth.handler: starting renewal process
+2022-08-20T18:39:44.688Z [INFO]  sink.file: token written: path=/etc/vault/config/approle/wrapped_token
+2022-08-20T18:39:44.689Z [INFO]  sink.file: token written: path=/etc/vault/config/approle/unwrapped_token
+2022-08-20T18:39:44.689Z [INFO]  sink.server: sink server stopped
+2022-08-20T18:39:44.689Z [INFO]  sinks finished, exiting
+2022-08-20T18:39:44.689Z [INFO]  auth.handler: shutdown triggered, stopping lifetime watcher
+2022-08-20T18:39:44.689Z [INFO]  auth.handler: auth handler stopped
+2022-08-20T18:39:44.689Z [INFO]  template.server: template server stopped
+passw0rd admin
+
+
+```
+
+как видим, секрет passw0rd admin получен.
+
+
 
 
 ---

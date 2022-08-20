@@ -1,0 +1,125 @@
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "v1",
+            "data": {
+                "name": "netology.ru"
+            },
+            "kind": "ConfigMap",
+            "metadata": {
+                "creationTimestamp": "2022-08-20T05:48:54Z",
+                "name": "domain",
+                "namespace": "netology-test",
+                "resourceVersion": "411379",
+                "uid": "0b51f8a2-6175-4792-9bf3-e8a43c65b5e1"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "data": {
+                "ca.crt": "-----BEGIN CERTIFICATE-----\nMIIC/jCCAeagAwIBAgIBADANBgkqhkiG9w0BAQsFADAVMRMwEQYDVQQDEwprdWJl\ncm5ldGVzMB4XDTIyMDcwOTEyNTYzOFoXDTMyMDcwNjEyNTYzOFowFTETMBEGA1UE\nAxMKa3ViZXJuZXRlczCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL8O\n5VmrwbWA1yHR5rbJXXB09Hg8FSybD+qb82YTuF0p1R5npIS6DqVBJxfFq80VIS7P\n6PMotTGd7grF1rd1Ga8a7aRaNPbVizmNnS4PjhycaaZeXTPvhk7bLE/WQtrheeC2\nsrT6lEEnyifn/gpfGhfRm8BLlDqqIcr4fUbfxjpynPocdyjRGMBlcAlPHcBbgHVx\nL2iWvGgoESSp6v92LnQUkC3mPuGr9ZPjsFIXVuf7Uo/JLyBAd+62NiGYyX5ZWJCU\n4URRZ9ezwkfujCCGfHCtqYZ+CE6zC4CGKRy8N9x6H+XSt18mah/EZTJ8xik8VR1M\nk5yZ551mM+MxxSwQ6D0CAwEAAaNZMFcwDgYDVR0PAQH/BAQDAgKkMA8GA1UdEwEB\n/wQFMAMBAf8wHQYDVR0OBBYEFO/jGwHMx8VJDAUnVmVH8XbGoPBWMBUGA1UdEQQO\nMAyCCmt1YmVybmV0ZXMwDQYJKoZIhvcNAQELBQADggEBAJ3uu54Wr+5vtk4KnvfD\nt4l0FtQtCkPcFfmi8cmY3hYs/wEgCvuRiMyvE6HUhYRNYxWI45GtD6NNJAvbNqqf\ndxVsQfitX+9puTS6uSK/AgdNbOGHeE7pCodgXT175ui7cHRBwg2Hz3YmutdGL0WS\nyNswAc00ABfzy16FYbDxFPYxeDBxvJmOK/VZRxw2Qxiypk5DYF+fKh8oaSAb47+o\nLI0lxgTJY4zvbpua3yhQGwJmwGaAhnC8FiOUYkWto2oaPnz9nTTZeMyI8rFgRA6G\nfgwN2yaACr8khCafGE6ITUixlTZm3ngEaZPGJD4cAcvhBSx3Or19xeHHoKDSzksH\nioA=\n-----END CERTIFICATE-----\n"
+            },
+            "kind": "ConfigMap",
+            "metadata": {
+                "annotations": {
+                    "kubernetes.io/description": "Contains a CA bundle that can be used to verify the kube-apiserver when using internal endpoints such as the internal service IP or kubernetes.default.svc. No other usage is guaranteed across distributions of Kubernetes clusters."
+                },
+                "creationTimestamp": "2022-08-19T10:53:47Z",
+                "name": "kube-root-ca.crt",
+                "namespace": "netology-test",
+                "resourceVersion": "371957",
+                "uid": "825aa0b4-14c9-40b5-a9c1-8e92e76e26b1"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "data": {
+                "nginx.conf": "server {\r\n    listen 80;\r\n    server_name  netology.ru www.netology.ru;\r\n    access_log  /var/log/nginx/domains/netology.ru-access.log  main;\r\n    error_log   /var/log/nginx/domains/netology.ru-error.log info;\r\n    location / {\r\n        include proxy_params;\r\n        proxy_pass http://10.10.10.10:8080/;\r\n    }\r\n}\r\n"
+            },
+            "kind": "ConfigMap",
+            "metadata": {
+                "creationTimestamp": "2022-08-20T05:48:37Z",
+                "name": "nginx-config",
+                "namespace": "netology-test",
+                "resourceVersion": "411352",
+                "uid": "fa9a3432-3a09-4246-9702-501a5e5febee"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "data": {
+                "app-role-id": "8e9df980-f3af-8f2e-7131-b49921de7a15\n",
+                "vault-agent.hcl": "pid_file = \"/tmp/.pidfile\"\n\nauto_auth {\n  mount_path = \"auth/approle\"\n  method \"approle\" {\n    config = {\n      role_id_file_path = \"/etc/vault/config/app-role-id\"\n    }\n  }\n\n  sink {\n      type = \"file\"\n      wrap_ttl = \"3m\"\n      config = {\n        path = \"/etc/vault/config/approle/wrapped_token\"\n        mode = 0777\n      }\n    }\n\n  sink {\n    type = \"file\"\n    config = {\n      path = \"/etc/vault/config/approle/unwrapped_token\"\n      mode = 0777\n      }\n    }\n}\n\nvault {\n  address = \"http://vault:8200\"\n}\nexit_after_auth = true\n"
+            },
+            "kind": "ConfigMap",
+            "metadata": {
+                "annotations": {
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"data\":{\"app-role-id\":\"8e9df980-f3af-8f2e-7131-b49921de7a15\\n\",\"vault-agent.hcl\":\"pid_file = \\\"/tmp/.pidfile\\\"\\n\\nauto_auth {\\n  mount_path = \\\"auth/approle\\\"\\n  method \\\"approle\\\" {\\n    config = {\\n      role_id_file_path = \\\"/etc/vault/config/app-role-id\\\"\\n    }\\n  }\\n\\n  sink {\\n      type = \\\"file\\\"\\n      wrap_ttl = \\\"3m\\\"\\n      config = {\\n        path = \\\"/etc/vault/config/approle/wrapped_token\\\"\\n        mode = 0777\\n      }\\n    }\\n\\n  sink {\\n    type = \\\"file\\\"\\n    config = {\\n      path = \\\"/etc/vault/config/approle/unwrapped_token\\\"\\n      mode = 0777\\n      }\\n    }\\n}\\n\\nvault {\\n  address = \\\"http://vault:8200\\\"\\n}\\nexit_after_auth = true\\n\"},\"kind\":\"ConfigMap\",\"metadata\":{\"annotations\":{},\"name\":\"vault-agent-config\",\"namespace\":\"netology-test\"}}\n"
+                },
+                "creationTimestamp": "2022-08-20T05:05:56Z",
+                "name": "vault-agent-config",
+                "namespace": "netology-test",
+                "resourceVersion": "406958",
+                "uid": "0695aeee-01de-48aa-9112-3eb40fe777c0"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "data": {
+                "app-role-id": "c7b3c0a7-e880-46ef-9110-d9e17565043d\n",
+                "vault-agent-init.hcl": "pid_file = \"/tmp/.pidfile\"\n\nauto_auth {\n  mount_path = \"auth/approle\"\n  method \"approle\" {\n    config = {\n      role_id_file_path = \"/etc/vault/config/app-role-id\"\n    }\n  }\n}\ntemplate {\n            source      = \"/etc/vault/config/template/nginx/nginx.conf.tmpl\"\n            destination = \"/etc/vault/config/render/nginx/nginx.conf\"\n}\n\nvault {\n  address = \"http://vault:8200\"\n}\nexit_after_auth = true\n",
+                "vault-agent-reload.hcl": "pid_file = \"/tmp/.pidfile\"\n\nauto_auth {\n  mount_path = \"auth/approle\"\n  method \"approle\" {\n    config = {\n      role_id_file_path = \"/etc/vault/config/app-role-id\"\n    }\n  }\n}\n\ntemplate {\n      source      = \"/etc/vault/config/template/nginx/nginx.conf.tmpl\"\n      destination = \"/etc/vault/config/render/nginx/nginx.conf\"\n      command = \"ps ax | grep 'nginx: maste[r]' | awk '{print $1}' | xargs kill -s HUP\"\n}\ntemplate_config {\n      static_secret_render_interval = \"1m\"\n}\n\nvault {\n  address = \"http://vault:8200\"\n}\n"
+            },
+            "kind": "ConfigMap",
+            "metadata": {
+                "annotations": {
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"data\":{\"app-role-id\":\"c7b3c0a7-e880-46ef-9110-d9e17565043d\\n\",\"vault-agent-init.hcl\":\"pid_file = \\\"/tmp/.pidfile\\\"\\n\\nauto_auth {\\n  mount_path = \\\"auth/approle\\\"\\n  method \\\"approle\\\" {\\n    config = {\\n      role_id_file_path = \\\"/etc/vault/config/app-role-id\\\"\\n    }\\n  }\\n}\\ntemplate {\\n            source      = \\\"/etc/vault/config/template/nginx/nginx.conf.tmpl\\\"\\n            destination = \\\"/etc/vault/config/render/nginx/nginx.conf\\\"\\n}\\n\\nvault {\\n  address = \\\"http://vault:8200\\\"\\n}\\nexit_after_auth = true\\n\",\"vault-agent-reload.hcl\":\"pid_file = \\\"/tmp/.pidfile\\\"\\n\\nauto_auth {\\n  mount_path = \\\"auth/approle\\\"\\n  method \\\"approle\\\" {\\n    config = {\\n      role_id_file_path = \\\"/etc/vault/config/app-role-id\\\"\\n    }\\n  }\\n}\\n\\ntemplate {\\n      source      = \\\"/etc/vault/config/template/nginx/nginx.conf.tmpl\\\"\\n      destination = \\\"/etc/vault/config/render/nginx/nginx.conf\\\"\\n      command = \\\"ps ax | grep 'nginx: maste[r]' | awk '{print $1}' | xargs kill -s HUP\\\"\\n}\\ntemplate_config {\\n      static_secret_render_interval = \\\"1m\\\"\\n}\\n\\nvault {\\n  address = \\\"http://vault:8200\\\"\\n}\\n\"},\"kind\":\"ConfigMap\",\"metadata\":{\"annotations\":{},\"name\":\"vault-agent-configs\",\"namespace\":\"netology-test\"}}\n"
+                },
+                "creationTimestamp": "2022-08-20T04:40:30Z",
+                "name": "vault-agent-configs",
+                "namespace": "netology-test",
+                "resourceVersion": "404277",
+                "uid": "78cfa925-1748-4fb0-adb7-392167e1eb00"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "data": {
+                "vault.hcl": "disable_mlock = true\nui = true\napi_addr = \"http://vault:8200\"\n\nlistener \"tcp\" {\n  address = \"[::]:8200\"\n  tls_disable = 1\n  #tls_cert_file = \"/vault/userconfig/tls-server/server.crt\"\n  #tls_key_file = \"/vault/userconfig/tls-server/server.key\"\n  #tls_ca_cert_file = \"/vault/userconfig/tls-ca/ca.crt\"\n}\nstorage \"file\" {\n  path = \"/vault/data\"\n}\n"
+            },
+            "kind": "ConfigMap",
+            "metadata": {
+                "annotations": {
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"data\":{\"vault.hcl\":\"disable_mlock = true\\nui = true\\napi_addr = \\\"http://vault:8200\\\"\\n\\nlistener \\\"tcp\\\" {\\n  address = \\\"[::]:8200\\\"\\n  tls_disable = 1\\n  #tls_cert_file = \\\"/vault/userconfig/tls-server/server.crt\\\"\\n  #tls_key_file = \\\"/vault/userconfig/tls-server/server.key\\\"\\n  #tls_ca_cert_file = \\\"/vault/userconfig/tls-ca/ca.crt\\\"\\n}\\nstorage \\\"file\\\" {\\n  path = \\\"/vault/data\\\"\\n}\\n\"},\"kind\":\"ConfigMap\",\"metadata\":{\"annotations\":{},\"name\":\"vault-config\",\"namespace\":\"netology-test\"}}\n"
+                },
+                "creationTimestamp": "2022-08-19T11:09:01Z",
+                "name": "vault-config",
+                "namespace": "netology-test",
+                "resourceVersion": "373498",
+                "uid": "78829e4a-a80f-4692-b283-c173b32d78aa"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "data": {
+                "nginx.conf.tmpl": "worker_processes     4;\nworker_rlimit_nofile 65535;\npid /tmp/nginx.pid;\n\n\nevents {\n    multi_accept       on;\n    worker_connections 65535;\n}\n\nhttp {\n    charset                utf-8;\n    sendfile               on;\n    tcp_nopush             on;\n    tcp_nodelay            on;\n    server_tokens          off;\n    log_not_found          off;\n    types_hash_max_size    2048;\n    types_hash_bucket_size 64;\n    client_max_body_size   16M;\n\n\n    # Logging\n    access_log             /var/log/nginx/access.log;\n    error_log              /var/log/nginx/error.log warn;\n\n    server {\n        listen 8080;\n        client_body_temp_path /tmp/client_temp;\n        proxy_temp_path /tmp/proxy_temp;\n        fastcgi_temp_path /tmp/fastcgi_temp;\n        uwsgi_temp_path /tmp/uwsgi_temp;\n        scgi_temp_path /tmp/scgi_temp;\n\n        location / {\n          {{ with secret \"secrets/k11s/demo/app/nginx\" }}\n          return 200 '{{ .Data.data.responseText }}';\n          add_header Content-Type text/plain always;\n          {{ end }}\n        }\n        }\n}\n"
+            },
+            "kind": "ConfigMap",
+            "metadata": {
+                "annotations": {
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"data\":{\"nginx.conf.tmpl\":\"worker_processes     4;\\nworker_rlimit_nofile 65535;\\npid /tmp/nginx.pid;\\n\\n\\nevents {\\n    multi_accept       on;\\n    worker_connections 65535;\\n}\\n\\nhttp {\\n    charset                utf-8;\\n    sendfile               on;\\n    tcp_nopush             on;\\n    tcp_nodelay            on;\\n    server_tokens          off;\\n    log_not_found          off;\\n    types_hash_max_size    2048;\\n    types_hash_bucket_size 64;\\n    client_max_body_size   16M;\\n\\n\\n    # Logging\\n    access_log             /var/log/nginx/access.log;\\n    error_log              /var/log/nginx/error.log warn;\\n\\n    server {\\n        listen 8080;\\n        client_body_temp_path /tmp/client_temp;\\n        proxy_temp_path /tmp/proxy_temp;\\n        fastcgi_temp_path /tmp/fastcgi_temp;\\n        uwsgi_temp_path /tmp/uwsgi_temp;\\n        scgi_temp_path /tmp/scgi_temp;\\n\\n        location / {\\n          {{ with secret \\\"secrets/k11s/demo/app/nginx\\\" }}\\n          return 200 '{{ .Data.data.responseText }}';\\n          add_header Content-Type text/plain always;\\n          {{ end }}\\n        }\\n        }\\n}\\n\"},\"kind\":\"ConfigMap\",\"metadata\":{\"annotations\":{},\"name\":\"vault-nginx-template\",\"namespace\":\"netology-test\"}}\n"
+                },
+                "creationTimestamp": "2022-08-20T04:40:30Z",
+                "name": "vault-nginx-template",
+                "namespace": "netology-test",
+                "resourceVersion": "404276",
+                "uid": "eb2e81e5-8981-4407-ad3b-b7e69effa40f"
+            }
+        }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": ""
+    }
+}
