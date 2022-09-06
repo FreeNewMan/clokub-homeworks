@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: back-policy
+spec:
+  podSelector: 
+    matchLabels:
+      app: backend
+  policyTypes:
+  - Ingress
+  - Egress     
+  ingress: #Разрешаем входящий трафик в backend из frontend
+  - from:
+    - podSelector:
+        matchLabels:
+          app: frontend
+  egress: #Разершаем только исходящий трафик в frontend из backend  
+  - to:
+    - podSelector:
+        matchLabels:
+          app: frontend
+  - to:
+    ports:
+    - protocol: UDP #доступ к kube-dns 
+      port: 53
+    - protocol: TCP
+      port: 53
+    - protocol: TCP
+      port: 80
