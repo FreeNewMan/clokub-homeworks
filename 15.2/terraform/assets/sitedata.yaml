@@ -1,0 +1,3 @@
+#cloud-config
+runcmd:
+  - hstprm=$(hostname) eval 'echo "<html><h1>My cool web-server $hstprm </h1><img src="https://storage.yandexcloud.net/tf-test-bucket-72/cat.jpg"></html>"' > /var/www/html/index.html   
