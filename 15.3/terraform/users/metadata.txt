@@ -1,0 +1,8 @@
+#cloud-config
+users:
+  - name: devuser
+    groups: sudo
+    shell: /bin/bash
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDKqGCwNxELZCf/CzwF4Nw+LxAfJy/VfXEYj5r1NvdOsWAcs30IKyihPOXMsYXZ9FQnwf5O3TqqqbTkWtLTzKS71TUnN2KPbAzJVrM8Ih4tJC0rlFTitdHaHpqaVlJ1qKCKRCF6sXs9BXdzbODKDaMjXcwLneEnbnzru/wApuNDJ98dfFXMYrNTOK+JXJsi1ol6K5qRulR611daR4/5repysUfxzXIZglpVYFhSnKKM/WcBGsEAH6NPUaO+l3bRXlAR911oe+0ZmIHUhbsB2UvpDfLdvDy0aFaYiRDHc/nG73+a8LU/WYrv3OYmJR7p8k1XuBkUjXRnRAp8sr+j3w8CLIbOMe2zh04Q+nbdPH0C01vn7A0PIkXQcXdUTXTPsscqkSq84ARER/WiGu+dxrsVmS7Jrq63i1u83jMbmxMoxInZ9xfJlTsaB7ijlHj2Nf6H7Knbr9XDHk+3lYTE5fGlHpiPAnRNRh1/oyYWpI7rnEkwDeQ/T1JEiJMM4G3GCBM= devuser@devuser-virtual-machine
